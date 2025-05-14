@@ -47,7 +47,7 @@ public class Main {
                 case "1" -> addPatient(currentDoctor);
                 case "2" -> addRecord(currentDoctor);
                 case "3" -> prescribe(currentDoctor);
-                case "4" -> addAppointment(currentDoctor);
+                case "4" -> addReferral(currentDoctor);
                 case "5" -> showRecords(currentDoctor);
                 case "6" -> showStatistics();
                 case "8" -> System.exit(0);
@@ -123,10 +123,11 @@ public class Main {
         System.out.print("Дата народження: ");
         String birth = scanner.nextLine();
         if (!(doctor instanceof FamilyDoctor fd)) {
-            System.out.println("Тільки сімейний лікар може створювати пацієнтів.");
+            System.out.println("Лише сімейний лікар може додавати пацієнтів.");
             return;
         }
         patients.add(new Patient(name, birth, fd));
+        System.out.println("Пацієнта додано");
     }
 
     private static void addRecord(Doctor doctor) {
@@ -143,8 +144,22 @@ public class Main {
             case "3" -> new LabResultRecord(desc);
             default -> null;
         };
-        if (record != null && doctor instanceof FamilyDoctor fd) fd.addMedicalRecord(p, record);
-        else System.out.println("Недопустима дія або тип запису.");
+        if (record == null) {
+            System.out.println("Невірний тип запису.");
+            return;
+        }
+
+        try {
+            if (doctor instanceof FamilyDoctor fd) {
+                fd.addMedicalRecord(p, record);
+            } else if (doctor instanceof SpecialistDoctor sd) {
+                sd.addMedicalRecord(p, record);
+            } else {
+                System.out.println("Цей тип лікаря не підтримує додавання записів.");
+            }
+        } catch (Exception e) {
+            System.out.println("Помилка: " + e.getMessage());
+        }
     }
 
     private static void prescribe(Doctor doctor) {
@@ -161,7 +176,7 @@ public class Main {
         tr.prescribeMedication(p, m.toString());
     }
 
-    private static void addAppointment(Doctor doctor) {
+    private static void addReferral(Doctor doctor) {
         Patient p = selectPatient();
         if (p == null) return;
 
@@ -205,6 +220,5 @@ public class Main {
             System.out.println("Будь ласка, введіть число.");
             return null;
         }
-
     }
 }
