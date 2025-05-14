@@ -1,6 +1,6 @@
 import java.util.*;
 
-public abstract class Patient extends MedicalRecord {
+public class Patient{
     private String name;
     private String birthDate;
     private FamilyDoctor familyDoctor;
