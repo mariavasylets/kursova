@@ -4,6 +4,7 @@ public class FamilyDoctor extends Doctor implements TreatmentCapable {
         super(name);
     }
 
+    @Override
     public void addMedicalRecord(Patient patient, MedicalRecord record) {
         patient.getMedicalRecords().add(record);
         System.out.println("Запис додано: " + record);
